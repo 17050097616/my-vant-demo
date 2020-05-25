@@ -1,6 +1,5 @@
 const Swal = require('sweetalert2')
-const VantUtil = require('./VantUtil')
-
+const VantUtil = require('./util/VantUtil')
 
 
 function testPromise() {
@@ -20,7 +19,40 @@ function testPromise() {
   // })
 }
 
-function selectDialog(vueObj) {
+async function selectDialog(vueObj) {
+  // async function test() {
+  const { value: fruit } = await Swal.fire({
+    title: 'Select field validation',
+    input: 'select',
+    inputOptions: {
+      apples: 'Apples',
+      bananas: 'Bananas',
+      grapes: 'Grapes',
+      oranges: 'Oranges'
+    },
+    inputPlaceholder: 'Select a fruit',
+    showCancelButton: true,
+    inputValidator: (value) => {
+      return new Promise((resolve) => {
+        if (value === 'oranges') {
+          console.log(fruit);//undefined 此时fruit还没定义
+          resolve()//这步执行后会关闭弹框
+        } else {
+          resolve('You need to select oranges :)')//这步执行后会在下拉框下面显示提示
+        }
+      })
+    }
+  })
+  if (fruit) {
+    console.log(fruit);//oranges
+    Swal.fire(`You selected: ${fruit}`)
+  }
+  return fruit
+  // }
+  // console.log('fruit ' + test());//fruit [object Promise]
+  // console.log('fruit ' + await test());//fruit oranges
+}
+async function selectDialog1(vueObj) {
   async function test() {
     const { value: fruit } = await Swal.fire({
       title: 'Select field validation',
@@ -48,8 +80,10 @@ function selectDialog(vueObj) {
       console.log(fruit);//oranges
       Swal.fire(`You selected: ${fruit}`)
     }
+    return fruit
   }
-  test()
+  // console.log('fruit ' + test());//fruit [object Promise]
+  console.log('fruit ' + await test());//fruit oranges
 }
 
 function asyncAwait() {
@@ -63,6 +97,7 @@ function asyncAwait() {
     console.log('before takeLongTime')
     // const v = await takeLongTime();//await会等待setTimeout()里面的函数体执行完
     // console.log(v);//v是long_time_value,即resolve的实参
+
     // v.then((value) => {
     //   console.log(value);
     // })//报错,因为v不是promise,没有then函数
@@ -82,15 +117,9 @@ function asyncAwait() {
 }
 
 function longestToast(vueObj) {
-  vueObj.$toast({
-    duration: 0, // 持续展示 toast
-    closeOnClickOverlay: true,//是否在点击遮罩层后关闭,要配合overlay=true使用
-    // closeOnClick: true,//是指点击toast本身
-    message: 'haha',
-    overlay: true,
-
-  });
+  VantUtil.longestToast(vueObj, 'haha')
 }
+
 function delayToast(vueObj) {
   vueObj.$toast({
     duration: 4000, // 持续展示 toast
@@ -126,6 +155,23 @@ function nestedDialog(vueObj) {
     // on cancel
   });
 
+}
+
+
+function longMsgDialog(vueObj) {
+  vueObj.$dialog.confirm({
+    title: '缴费查询信息',
+    message: 'data/data/com.echase.bmpcashier/files/assets/dist/static/images/abc.webp',
+    messageAlign: 'left'
+  }).then(() => {
+  }).catch(() => {
+    // on cancel
+  });
+
+}
+function showMsg(vueObj) {
+  console.log("showMsg" + require('../../test').getTime())
+  VantUtil.longestToast(vueObj, require('../../test').getTime())
 }
 
 // async function SwalDialog(vueObj) {
@@ -166,5 +212,7 @@ export {
   nestedDialog,
   testPromise,
   asyncAwait,
-  selectDialog
+  longMsgDialog,
+  selectDialog,
+  showMsg
 };

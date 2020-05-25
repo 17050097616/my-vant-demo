@@ -24,6 +24,14 @@ let btnData = [{
   text: 'promise',
   method: 'testPromise'
 }
+  , {
+  text: 'longMsgDialog',
+  method: 'longMsgDialog'
+}
+  , {
+  text: 'showMsg',
+  method: 'showMsg'
+}
 ]
 
 module.exports = {
